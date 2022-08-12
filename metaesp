@@ -1,0 +1,238 @@
+-- very messy code too lazy to make it shorter
+local main = Instance.new("ScreenGui", game.CoreGui)
+local component = Instance.new("Frame", main)
+local title = Instance.new("TextLabel", component)
+local user = Instance.new("TextBox", component)
+local confirm = Instance.new("TextButton", component)
+local all = Instance.new("TextButton", component)
+local markall = false
+local RunService = game:GetService("RunService")
+local mainf = Instance.new("Folder", game.CoreGui)
+local mainbill = Instance.new("BillboardGui", mainf)
+local maintext = Instance.new("TextLabel", mainbill)
+local mainhigh = Instance.new("Highlight", mainf)
+local cw = false
+local burger
+local brbr = game:GetService("HttpService")
+local hopethisworks
+local scallop
+local active = false
+local scalloped
+local uis = game:GetService("UserInputService")
+local visible = true
+
+printconsole("esp loaded")
+
+main.Name = brbr:GenerateGUID(false)
+title.Text = "meta esp v1"
+user.Text = "name here (caps)"
+confirm.Text = "submit"
+all.Text = "mark all"
+maintext.Text = " "
+
+component.BackgroundColor3 = Color3.fromRGB(40,40,40)
+component.Size = UDim2.new(0,300,0,100)
+component.Position = UDim2.new(0,30,0,920)
+title.Position = UDim2.new(0,0,0,-30)
+title.Size = UDim2.new(1,0,1,0)
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.TextSize = 20
+title.BackgroundTransparency = 1
+user.BackgroundColor3 = Color3.fromRGB(60,60,60)
+user.Size = UDim2.new(0,150,0,50)
+user.Position = UDim2.new(0,10,0,40)
+user.TextScaled = true
+user.TextColor3 = Color3.fromRGB(255,255,255)
+confirm.BackgroundColor3 = Color3.fromRGB(60,60,60)
+confirm.Size = UDim2.new(0,40,0,40)
+confirm.Position = UDim2.new(0,170,0,45)
+confirm.TextColor3 = Color3.new(255,255,255)
+confirm.TextScaled = true
+all.BackgroundColor3 = Color3.fromRGB(60,60,60)
+all.Size = UDim2.new(0,70,0,60)
+all.Position = UDim2.new(0,220,0,30)
+all.TextScaled = true
+all.TextColor3 = Color3.fromRGB(255,255,255)
+mainbill.AlwaysOnTop = true
+mainbill.Size = UDim2.new(0,100,0,150)
+maintext.BackgroundTransparency = 1
+maintext.Position = UDim2.new(0,0,0,-50)
+maintext.Size = UDim2.new(0,100,0,100)
+maintext.TextColor3 = Color3.fromRGB(255,255,255)
+maintext.TextSize = 15
+mainf.Name = "esps"
+
+uis.InputBegan:Connect(function(what)
+    
+    if what.KeyCode == Enum.KeyCode.J then
+        
+        if visible == true then
+            
+            visible = false
+            main.Enabled = false
+            
+        else
+            
+            visible = true
+            main.Enabled = true
+            
+            end
+        end
+    
+    end)
+
+confirm.MouseButton1Down:Connect(function()
+    local worked = false
+    local ourvip
+    local players = game.Players:GetChildren()
+    for i,v in pairs(players) do
+        
+        if v.Name == user.Text then
+            worked = true
+            ourvip = v
+            active = true
+            all.Text = "unmark all"
+            end
+        
+        end
+    if worked == false then
+        
+        user.Text = "could not find"
+        
+        else
+            
+            local vipbill = mainbill:Clone()
+            local viptext = maintext:Clone()
+            local viphigh = mainhigh:Clone()
+            vipbill.Parent = mainf
+            viptext.Parent = vipbill
+            viphigh.Parent = mainf
+            viphigh.Name = ourvip.Name
+            vipbill.Name = ourvip.Name
+           
+            
+            
+            burger = RunService.RenderStepped:Connect(function()
+                if ourvip.Character then
+                    
+                viptext.Text = ourvip.Name.." "..math.floor(ourvip.Character.Humanoid.Health).." HP"
+                vipbill.Adornee = ourvip.Character.Head
+                viphigh.Adornee = ourvip.Character
+                cw = true
+                end
+            end)
+            local augh
+                augh = game.Players.PlayerRemoving:Connect(function(who)
+                    
+                   if who == ourvip then
+                       
+                       burger:Disconnect()
+                       augh:Disconnect()
+                    end
+            end)
+end
+end)
+
+all.MouseButton1Down:Connect(function()
+    
+    if active == false then
+    
+    active = true
+    for i,v in pairs(game.CoreGui.esps:GetChildren()) do
+        if v.Adornee ~= nil then
+    v:Destroy()
+    end
+    end
+    
+    for i,v in pairs(game.Players:GetChildren()) do
+
+        if v.Name ~= game.Players.LocalPlayer.Name then
+        local theb = mainbill:Clone()
+        local thet = maintext:Clone()
+        local theh = mainhigh:Clone()
+        theb.Name = v.UserId
+        theh.Name = v.UserId
+        theb.Parent = mainf
+        theh.Parent = mainf
+        thet.Parent = theb
+        end
+    end
+    
+    all.Text = "unmark all"
+    
+    hopethisworks = RunService.Heartbeat:Connect(function()
+        if cw == true then
+            burger:Disconnect()
+            cw = false
+        end
+        for i,v in pairs(game.CoreGui.esps:GetChildren()) do
+            if v.Name ~= "Highlight" and v.Name ~= "BillboardGui" then
+            local bunger = tonumber(v.Name)
+            local who = game.Players:GetPlayerByUserId(bunger)
+                if who then
+                    if who.Character then
+                    if v:IsA("Highlight") then
+                    v.Adornee = who.Character
+                    
+                    else
+                        if who.Character then
+                        v.Adornee = who.Character.Head
+                        v.TextLabel.Text = who.Name.." "..math.floor(who.Character.Humanoid.Health).." HP"
+                        end
+                    end
+                    end
+                    end
+                
+            end
+            end
+    end)
+    
+   scallop = game.Players.PlayerAdded:Connect(function(v)
+       
+       local theb = mainbill:Clone()
+        local thet = maintext:Clone()
+        local theh = mainhigh:Clone()
+        theb.Name = v.UserId
+        theh.Name = v.UserId
+        theb.Parent = mainf
+        theh.Parent = mainf
+        thet.Parent = theb
+       
+   end)
+   
+   scalloped = game.Players.PlayerRemoving:Connect(function(who)
+       
+       for i,v in pairs(mainf:GetChildren()) do
+       
+       if v.Name ~= "Highlight" and v.Name ~="BillboardGui" then
+           
+           local m = tonumber(v.Name)
+           if m == who.UserId then
+               
+               v:Destroy()
+               
+               end
+           
+           end
+       
+       end
+   end)
+   else
+       all.Text = "mark all"
+       active = false
+       cw = false
+       if cw == false then
+       scalloped:Disconnect()
+       scallop:Disconnect()
+       hopethisworks:Disconnect()
+       end
+       for i,v in pairs(mainf:GetChildren()) do
+           
+          if v.Name ~= "Highlight" and v.Name ~= "BillboardGui" then
+           
+           v:Destroy()
+           
+           end
+       end
+   end
+    end)
