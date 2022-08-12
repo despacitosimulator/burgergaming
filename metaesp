@@ -1,4 +1,4 @@
--- very messy code too lazy to make it shorter
+-- very messy code too lazy to make it shorter 
 local main = Instance.new("ScreenGui", game.CoreGui)
 local component = Instance.new("Frame", main)
 local title = Instance.new("TextLabel", component)
@@ -236,3 +236,4 @@ all.MouseButton1Down:Connect(function()
        end
    end
     end)
+-- balls
